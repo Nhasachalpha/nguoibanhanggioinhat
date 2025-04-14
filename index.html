@@ -15,6 +15,7 @@
             --success-color: #2ecc71; /* Green */
             --text-color: #2c3e50; /* Dark Blue/Gray */
             --light-bg: #f9f9f9;
+            --error-color: #e74c3c; /* Red for errors */
         }
         body {
             font-family: 'Montserrat', sans-serif;
@@ -98,14 +99,17 @@
             background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent background */
             z-index: 1001; /* Ensure it's above other content */
             animation: fadeIn 0.3s;
+            align-items: center; /* For vertical centering */
+            justify-content: center; /* For horizontal centering */
         }
         .modal-content {
             background-color: white;
-            margin: 10% auto; /* Center vertically and horizontally */
+            /* margin: 10% auto; Remove margin auto when using flex center */
             padding: 30px;
             border-radius: 8px;
             box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
             max-width: 600px; /* Limit width */
+            width: 90%; /* Responsive width */
             position: relative; /* For close button positioning */
             animation: slideDown 0.3s;
         }
@@ -278,6 +282,18 @@
             margin-right: 0.75rem;
             font-size: 1.2rem;
         }
+        /* *** START: Styles for validation errors *** */
+        .form-error-message {
+            color: var(--error-color);
+            font-size: 0.875rem; /* text-sm */
+            margin-top: 0.25rem; /* mt-1 */
+            display: none; /* Hidden by default */
+        }
+        .input-error {
+            border-color: var(--error-color) !important; /* Add !important to override focus styles if needed */
+            box-shadow: 0 0 0 1px var(--error-color) !important;
+        }
+        /* *** END: Styles for validation errors *** */
     </style>
 </head>
 <body class="antialiased">
@@ -499,7 +515,7 @@
                     </div>
                     <p class="text-gray-700 italic">"Doanh số team tôi tăng 35% sau 2 tháng áp dụng sách. Các kỹ thuật tâm lý rất hiệu quả với khách hàng khó tính."</p>
                 </div>
-                 <div class="testimonial-card">
+                <div class="testimonial-card">
                     <div class="flex items-center mb-4">
                         <img src="https://e.khoahoc.tv/photos/image/2015/10/05/phu_nu_viet_nam_8.jpg" alt="Trần Thị Hồng" class="w-12 h-12 rounded-full mr-4 object-cover" onerror="this.src='https://placehold.co/48x48/cccccc/ffffff?text=TTH'">
                         <div>
@@ -512,7 +528,7 @@
                     </div>
                     <p class="text-gray-700 italic">"Cuốn '36 kế' thực sự ấn tượng. Trước đây tôi hay mất khách vì không biết xử lý phản đối, giờ đã tự tin hơn nhiều."</p>
                 </div>
-                 <div class="testimonial-card">
+                <div class="testimonial-card">
                     <div class="flex items-center mb-4">
                         <img src="https://thanhnien.mediacdn.vn/Uploaded/ngocthanh/2016_03_23/9x01_YGEO.jpg" alt="Lê Minh Đức" class="w-12 h-12 rounded-full mr-4 object-cover" onerror="this.src='https://placehold.co/48x48/cccccc/ffffff?text=LMD'">
                         <div>
@@ -525,7 +541,7 @@
                     </div>
                     <p class="text-gray-700 italic">"Cuốn 'Thao Túng Tâm Lý' mở ra cách tiếp cận mới. Kỹ thuật neo tâm lý và hiệu ứng khan hiếm giúp tôi tăng tỷ lệ chốt đơn đáng kể."</p>
                 </div>
-                 <div class="testimonial-card">
+                <div class="testimonial-card">
                      <div class="flex items-center mb-4">
                          <img src="https://danviet.mediacdn.vn/thumb_w/650/296231569849192448/2021/11/24/944-1637718543975153507213.jpg" alt="Phạm Hoàng Nam" class="w-12 h-12 rounded-full mr-4 object-cover" onerror="this.src='https://placehold.co/48x48/cccccc/ffffff?text=PHN'">
                          <div>
@@ -573,8 +589,7 @@
             <h2 class="section-title text-3xl mb-12">Đặt Hàng Ngay Hôm Nay</h2>
             <div class="bg-gray-50 p-6 md:p-8 rounded-lg shadow-lg max-w-4xl mx-auto border border-gray-200">
 
-                <form id="buyForm" class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div class="md:col-span-2">
+                <form id="buyForm" class="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-4" novalidate> <div class="md:col-span-2">
                         <h3 class="text-xl font-semibold mb-4 text-center text-gray-800">1. Chọn Sản Phẩm Bạn Muốn Mua:</h3>
                         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
                             <div class="product-option rounded-lg relative">
@@ -615,55 +630,47 @@
                     <div class="md:col-span-2">
                          <h3 class="text-xl font-semibold mb-4 text-center text-gray-800">2. Thông Tin Giao Hàng:</h3>
                     </div>
-
                     <div>
                         <label for="fullName" class="block text-gray-700 font-medium mb-2">Họ và tên <span class="text-red-500">*</span></label>
                         <input type="text" id="fullName" name="name" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:border-blue-500" placeholder="Ví dụ: Nguyễn Văn A">
-                    </div>
-
+                        <p id="fullNameError" class="form-error-message">Vui lòng nhập họ và tên.</p> </div>
                     <div>
                         <label for="phone" class="block text-gray-700 font-medium mb-2">Số điện thoại <span class="text-red-500">*</span></label>
-                        <input type="tel" id="phone" name="phone" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:border-blue-500" placeholder="Nhập SĐT nhận hàng">
-                    </div>
-
+                        <input type="tel" id="phone" name="phone" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:border-blue-500" placeholder="Nhập SĐT nhận hàng (10 số, bắt đầu bằng 0)">
+                        <p id="phoneError" class="form-error-message">Số điện thoại không hợp lệ (10 số, bắt đầu bằng 0).</p> </div>
                     <div>
                         <label for="city" class="block text-gray-700 font-medium mb-2">Tỉnh/Thành phố <span class="text-red-500">*</span></label>
                         <select id="city" name="city" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:border-blue-500 bg-white">
                             <option value="">-- Chọn Tỉnh/Thành phố --</option>
                             </select>
-                    </div>
-
+                         <p id="cityError" class="form-error-message">Vui lòng chọn Tỉnh/Thành phố.</p> </div>
                     <div>
                         <label for="district" class="block text-gray-700 font-medium mb-2">Quận/Huyện <span class="text-red-500">*</span></label>
                         <select id="district" name="district" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:border-blue-500 bg-white" disabled>
                             <option value="">-- Chọn Quận/Huyện --</option>
                             </select>
-                    </div>
-
+                         <p id="districtError" class="form-error-message">Vui lòng chọn Quận/Huyện.</p> </div>
                     <div>
                         <label for="ward" class="block text-gray-700 font-medium mb-2">Phường/Xã <span class="text-red-500">*</span></label>
                         <select id="ward" name="ward" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:border-blue-500 bg-white" disabled>
                             <option value="">-- Chọn Phường/Xã --</option>
                             </select>
-                    </div>
-
+                         <p id="wardError" class="form-error-message">Vui lòng chọn Phường/Xã.</p> </div>
                     <div>
                         <label for="address" class="block text-gray-700 font-medium mb-2">Địa chỉ cụ thể <span class="text-red-500">*</span></label>
                         <input type="text" id="address" name="specific_address" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:border-blue-500" placeholder="Số nhà, tên đường, tòa nhà...">
-                    </div>
-
+                         <p id="addressError" class="form-error-message">Vui lòng nhập địa chỉ cụ thể.</p> </div>
                     <div class="md:col-span-2">
                         <label for="note" class="block text-gray-700 font-medium mb-2">Ghi chú (tùy chọn)</label>
                         <textarea id="note" name="note" rows="3" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:border-blue-500" placeholder="Ví dụ: Giao hàng giờ hành chính..."></textarea>
                     </div>
-
                     <div class="md:col-span-2 text-center mt-4">
                         <button type="button" onclick="reviewOrder()" class="btn-primary text-lg w-full md:w-auto md:px-16 py-3 shadow-lg transform hover:scale-105 transition-transform">
                             <i class="fas fa-check-circle mr-2"></i> Gửi Đơn Hàng
                         </button>
                          <p class="text-sm text-gray-500 mt-3">Nhân viên sẽ gọi xác nhận đơn hàng trước khi giao.</p>
                     </div>
-                </form>
+                    </form>
             </div>
         </div>
     </section>
@@ -678,13 +685,11 @@
                 <button class="btn-secondary" onclick="closeModal()">
                     <i class="fas fa-edit mr-2"></i> Chỉnh Sửa
                 </button>
-                <button class="btn-success" onclick="submitOrder()">
-                    <i class="fas fa-check mr-2"></i> Xác Nhận Đặt Hàng
+                <button id="confirmSubmitBtn" class="btn-success" onclick="submitOrder()"> <i class="fas fa-check mr-2"></i> Xác Nhận Đặt Hàng
                 </button>
             </div>
         </div>
     </div>
-
     <div id="successModal" class="modal">
         <div class="modal-content text-center">
              <div class="text-6xl text-green-500 mb-4">
@@ -699,7 +704,6 @@
             </div>
         </div>
     </div>
-
     <footer class="bg-gray-800 text-gray-300 py-12 px-4">
         <div class="container mx-auto grid grid-cols-1 md:grid-cols-3 gap-8">
             <div>
@@ -733,7 +737,6 @@
             <p>&copy; 2024 Sách Bán Hàng Đỉnh Cao. Phát triển bởi Nhóm ABC.</p>
         </div>
     </footer>
-
     <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.21.1/axios.min.js"></script>
     <script>
         // --- START: Address API Configuration ---
@@ -759,6 +762,17 @@
         let notificationInterval;
         // --- END: Notification Data ---
 
+        // --- START: Form Elements ---
+        const buyForm = document.getElementById('buyForm');
+        const fullNameInput = document.getElementById('fullName');
+        const phoneInput = document.getElementById('phone');
+        const cityInput = document.getElementById('city');
+        const districtInput = document.getElementById('district');
+        const wardInput = document.getElementById('ward');
+        const addressInput = document.getElementById('address');
+        const noteInput = document.getElementById('note'); // Get note input
+        // --- END: Form Elements ---
+
         // --- START: DOMContentLoaded Event Listener ---
         document.addEventListener('DOMContentLoaded', function() {
             fetchProvinces(); // Load provinces on page load
@@ -769,19 +783,25 @@
                 resetSelect(wardSelect, '-- Chọn Phường/Xã --');
                 districtSelect.disabled = true;
                 wardSelect.disabled = true;
+                 hideError(cityInput); // Hide error when selection changes
                 if (this.value) {
                     fetchDistricts(this.value);
-                    districtSelect.disabled = false;
+                    // districtSelect.disabled = false; // fetchDistricts will enable it on success
                 }
             });
 
             districtSelect.addEventListener('change', function() {
                 resetSelect(wardSelect, '-- Chọn Phường/Xã --');
                 wardSelect.disabled = true;
+                hideError(districtInput); // Hide error when selection changes
                 if (this.value) {
                     fetchWards(this.value);
-                    wardSelect.disabled = false;
+                    // wardSelect.disabled = false; // fetchWards will enable it on success
                 }
+            });
+
+             wardSelect.addEventListener('change', function() {
+                hideError(wardInput); // Hide error when selection changes
             });
 
             // Start notification display loop
@@ -792,11 +812,10 @@
                 radio.addEventListener('change', function() {
                     // Remove checked styles from all labels first
                     document.querySelectorAll('.product-option label').forEach(label => {
-                        label.parentElement.classList.remove('border-primary-color', 'shadow-md', 'bg-red-50'); // Use your primary color variable if defined in JS or use hex
-                        label.parentElement.style.borderColor = '#e5e7eb'; // Reset border
-                        label.parentElement.style.boxShadow = 'none'; // Reset shadow
-                        label.parentElement.style.backgroundColor = 'transparent'; // Reset background
-
+                        const parentDiv = label.closest('.product-option');
+                        parentDiv.style.borderColor = '#e5e7eb'; // Reset border
+                        parentDiv.style.boxShadow = 'none'; // Reset shadow
+                        parentDiv.style.backgroundColor = 'transparent'; // Reset background
                     });
                     // Add styles to the selected one's parent div
                     if (this.checked) {
@@ -812,8 +831,76 @@
             if (initiallyChecked) {
                 initiallyChecked.dispatchEvent(new Event('change'));
             }
+
+             // Add input event listeners to hide errors on input
+             [fullNameInput, phoneInput, addressInput].forEach(input => {
+                input.addEventListener('input', () => hideError(input));
+             });
+
         });
         // --- END: DOMContentLoaded Event Listener ---
+
+        // --- START: Validation Helper Functions ---
+        function showError(inputElement, message) {
+            const errorElement = document.getElementById(inputElement.id + 'Error');
+            if (errorElement) {
+                errorElement.textContent = message;
+                errorElement.style.display = 'block';
+            }
+            inputElement.classList.add('input-error');
+        }
+
+        function hideError(inputElement) {
+             const errorElement = document.getElementById(inputElement.id + 'Error');
+             if (errorElement) {
+                 errorElement.style.display = 'none';
+             }
+             inputElement.classList.remove('input-error');
+        }
+
+        function validateForm() {
+            let isValid = true;
+            // Clear previous errors
+            [fullNameInput, phoneInput, cityInput, districtInput, wardInput, addressInput].forEach(hideError);
+
+            // Check required text fields
+            if (!fullNameInput.value.trim()) {
+                showError(fullNameInput, 'Vui lòng nhập họ và tên.');
+                isValid = false;
+            }
+            if (!addressInput.value.trim()) {
+                showError(addressInput, 'Vui lòng nhập địa chỉ cụ thể.');
+                isValid = false;
+            }
+
+            // Check phone number format
+            const phoneValue = phoneInput.value.trim();
+            if (!phoneValue) {
+                 showError(phoneInput, 'Vui lòng nhập số điện thoại.');
+                 isValid = false;
+            } else if (!/^0\d{9}$/.test(phoneValue)) {
+                showError(phoneInput, 'Số điện thoại không hợp lệ (10 số, bắt đầu bằng 0).');
+                isValid = false;
+            }
+
+            // Check required select fields
+             if (!cityInput.value) {
+                showError(cityInput, 'Vui lòng chọn Tỉnh/Thành phố.');
+                isValid = false;
+            }
+             if (!districtInput.value && !districtInput.disabled) { // Only validate if enabled
+                showError(districtInput, 'Vui lòng chọn Quận/Huyện.');
+                isValid = false;
+            }
+             if (!wardInput.value && !wardInput.disabled) { // Only validate if enabled
+                showError(wardInput, 'Vui lòng chọn Phường/Xã.');
+                isValid = false;
+            }
+
+            return isValid;
+        }
+        // --- END: Validation Helper Functions ---
+
 
         // --- START: Address Fetching Functions ---
         async function fetchProvinces() {
@@ -829,28 +916,39 @@
         }
 
         async function fetchData(url, selectElement, defaultOptionText, dataKey = null) {
+            selectElement.disabled = true; // Disable while fetching
             try {
-                const response = await axios.get(url);
+                const response = await axios.get(url); // Still using axios for address fetching
                 const data = dataKey ? response.data[dataKey] : response.data;
 
                 resetSelect(selectElement, defaultOptionText); // Clear previous options
 
                 if (data && data.length > 0) {
+                    data.sort((a, b) => a.name.localeCompare(b.name)); // Sort alphabetically
                     data.forEach(item => {
                         const option = document.createElement('option');
                         option.value = item.code;
                         option.textContent = item.name;
                         selectElement.appendChild(option);
                     });
+                     selectElement.disabled = false; // Enable after successful load
                 } else {
                      console.warn(`No data found for ${selectElement.id} at ${url}`);
+                     // Keep disabled if no data (except for city)
+                     if (selectElement !== citySelect) {
+                         selectElement.disabled = true;
+                     } else {
+                         selectElement.disabled = false; // City should always be enabled initially
+                     }
                 }
 
             } catch (error) {
                 console.error(`Error fetching ${selectElement.id}:`, error);
-                // Optionally display an error message to the user
+                resetSelect(selectElement, `Lỗi tải ${selectElement.id.replace('Select', '')}`); // Show error in dropdown
+                selectElement.disabled = true; // Keep disabled on error
             }
         }
+
 
         function resetSelect(selectElement, defaultText) {
             selectElement.innerHTML = `<option value="">${defaultText}</option>`;
@@ -875,43 +973,39 @@
 
         // --- START: Order Review and Submission ---
         function reviewOrder() {
-            const form = document.getElementById('buyForm');
-            if (!form.checkValidity()) {
-                // If form is invalid, trigger browser's default validation UI
-                form.reportValidity();
-                return;
+            // Use the new validation function
+            if (!validateForm()) {
+                 // Find the first error and scroll to it (optional enhancement)
+                 const firstError = buyForm.querySelector('.input-error');
+                 if (firstError) {
+                    firstError.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    firstError.focus();
+                 }
+                return; // Stop if form is invalid
             }
 
-            // Additional custom validation (e.g., phone format)
-            const phoneInput = form.elements['phone'];
-            const phone = phoneInput.value.trim();
-            if (!/^0\d{9}$/.test(phone)) {
-                alert('Số điện thoại không hợp lệ. Vui lòng nhập số điện thoại 10 chữ số, bắt đầu bằng số 0.');
-                phoneInput.focus(); // Focus the invalid field
-                return;
-            }
-
-            // Get selected product details
+            // If valid, proceed to show modal
             const selectedProductRadio = document.querySelector('input[name="product"]:checked');
             const selectedProduct = selectedProductRadio ? selectedProductRadio.value : 'Chưa chọn sản phẩm';
 
             // Get form values
-            const name = form.elements['name'].value.trim();
+            const name = fullNameInput.value.trim();
+            const phone = phoneInput.value.trim();
             const cityName = citySelect.options[citySelect.selectedIndex].text;
             const districtName = districtSelect.options[districtSelect.selectedIndex].text;
             const wardName = wardSelect.options[wardSelect.selectedIndex].text;
-            const address = form.elements['specific_address'].value.trim();
-            const note = form.elements['note'].value.trim();
+            const address = addressInput.value.trim();
+            const note = noteInput.value.trim(); // Use variable
 
-            // Construct full address, handling cases where dropdowns might not be selected (though required should prevent this)
-            const fullAddress = `${address}, ${wardName !== '-- Chọn Phường/Xã --' ? wardName : ''}${wardName && districtName !== '-- Chọn Quận/Huyện --' ? ', ' : ''}${districtName !== '-- Chọn Quận/Huyện --' ? districtName : ''}${districtName && cityName !== '-- Chọn Tỉnh/Thành phố --' ? ', ' : ''}${cityName !== '-- Chọn Tỉnh/Thành phố --' ? cityName : ''}`.replace(/ , $/,'').replace(/^, /,'').trim(); // Clean up potential leading/trailing commas
+            // Construct full address
+            const fullAddress = `${address}, ${wardName}, ${districtName}, ${cityName}`;
 
             // Prepare order summary HTML
             let orderSummaryHTML = `
                 <div class="space-y-3 text-base">
                     <p><strong class="font-semibold text-gray-800 w-28 inline-block">Họ tên:</strong> ${name}</p>
                     <p><strong class="font-semibold text-gray-800 w-28 inline-block">Điện thoại:</strong> ${phone}</p>
-                    <p><strong class="font-semibold text-gray-800 w-28 inline-block">Địa chỉ:</strong> ${fullAddress || 'Chưa nhập địa chỉ'}</p>
+                    <p><strong class="font-semibold text-gray-800 w-28 inline-block">Địa chỉ:</strong> ${fullAddress}</p>
                     ${note ? `<p><strong class="font-semibold text-gray-800 w-28 inline-block">Ghi chú:</strong> ${note}</p>` : ''}
                     <hr class="my-3">
                     <p><strong class="font-semibold text-gray-800 w-28 inline-block">Sản phẩm:</strong> ${selectedProduct}</p>
@@ -919,23 +1013,29 @@
             `;
 
             document.getElementById('orderSummary').innerHTML = orderSummaryHTML;
-            document.getElementById('orderModal').style.display = 'flex'; // Use flex for centering
-             document.getElementById('orderModal').style.alignItems = 'center';
-             document.getElementById('orderModal').style.justifyContent = 'center';
+            document.getElementById('orderModal').style.display = 'flex';
         }
 
         function closeModal() {
             document.getElementById('orderModal').style.display = 'none';
+            // Clear potential error message from failed submit
+            const orderSummaryDiv = document.getElementById('orderSummary');
+            const existingError = orderSummaryDiv.querySelector('.text-red-600');
+            if (existingError) {
+                existingError.remove();
+            }
         }
 
         function closeSuccessModal() {
             document.getElementById('successModal').style.display = 'none';
-            document.getElementById('buyForm').reset(); // Reset form fields
+            buyForm.reset(); // Reset form fields
              // Reset address dropdowns
             resetSelect(districtSelect, '-- Chọn Quận/Huyện --');
             resetSelect(wardSelect, '-- Chọn Phường/Xã --');
             districtSelect.disabled = true;
             wardSelect.disabled = true;
+             // Clear any remaining error styles/messages
+             [fullNameInput, phoneInput, cityInput, districtInput, wardInput, addressInput].forEach(hideError);
             // Reselect the default product (combo) and update style
             const comboRadio = document.getElementById('combo');
              if (comboRadio) {
@@ -944,72 +1044,91 @@
             }
         }
 
-        async function submitOrder() {
-            const form = document.getElementById('buyForm'); // Ensure form is accessible
-
-            // Get form data again (in case something changed, though unlikely here)
-            const name = form.elements['name'].value.trim();
-            const phone = form.elements['phone'].value.trim();
-            const specificAddress = form.elements['specific_address'].value.trim();
-            const note = form.elements['note'].value.trim();
+        // *** START: Updated submitOrder function using fetch ***
+        function submitOrder() {
+            // Get form data again
+            const name = fullNameInput.value.trim();
+            const phone = phoneInput.value.trim();
+            const specificAddress = addressInput.value.trim(); // Use specific address field
+            const note = noteInput.value.trim();
             const selectedProduct = document.querySelector('input[name="product"]:checked').value;
 
+            // Get selected text from dropdowns
             const cityName = citySelect.options[citySelect.selectedIndex].text;
             const districtName = districtSelect.options[districtSelect.selectedIndex].text;
             const wardName = wardSelect.options[wardSelect.selectedIndex].text;
+
+            // Construct full address
             const fullAddress = `${specificAddress}, ${wardName}, ${districtName}, ${cityName}`;
 
-            // Prepare data for SheetDB API
+            // Prepare data for API
             const today = new Date();
-            // Format date as DD/MM/YYYY
             const formattedDate = `${String(today.getDate()).padStart(2, '0')}/${String(today.getMonth() + 1).padStart(2, '0')}/${today.getFullYear()}`;
 
+            // Prepare data object matching the keys from the provided snippet
             const orderData = {
-                'data': { // SheetDB expects data within a 'data' object for single row POST
-                    'Ngày Đặt': formattedDate,
-                    'Họ Tên': name,
-                    'Số Điện Thoại': phone,
-                    'Địa Chỉ': fullAddress,
-                    'Sản Phẩm': selectedProduct,
-                    'Ghi Chú': note || "Không có" // Provide default if empty
-                }
+                'Ngày Đặt': formattedDate, // Key from previous version
+                'Họ Tên': name,           // Key from previous version
+                'Số Điện Thoại': phone,   // Key from previous version
+                'Địa Chỉ': fullAddress,   // Key from previous version
+                'Sản Phẩm': selectedProduct, // Key from previous version
+                'Ghi Chú': note || "Không có" // Key from previous version
             };
 
-            // Display loading state (optional)
-            const submitButton = document.querySelector('#orderModal .btn-success');
+            // Display loading state
+            const submitButton = document.getElementById('confirmSubmitBtn');
             const originalButtonText = submitButton.innerHTML;
             submitButton.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Đang gửi...';
             submitButton.disabled = true;
+            document.querySelector('#orderModal .btn-secondary').disabled = true; // Disable edit button
 
-
-            try {
-                // Submit to SheetDB API
-                const response = await axios.post('https://sheetdb.io/api/v1/fg5880qtxha50', orderData, {
-                     headers: {
-                        'Content-Type': 'application/json'
-                    }
-                });
-
-                 console.log('SheetDB response:', response); // Log successful response
-
+            // Send data to SheetDB API using fetch
+            fetch('https://sheetdb.io/api/v1/fg5880qtxha50', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                // SheetDB expects the data wrapped in a 'data' object for single row POST
+                body: JSON.stringify({ data: orderData })
+            })
+            .then(response => {
+                // Check if the request was successful (status code 200-299)
+                if (!response.ok) {
+                    // If not OK, throw an error to be caught by .catch()
+                    // Try to get error message from response body if possible
+                    return response.json().then(errData => {
+                        throw new Error(errData.error || `Lỗi HTTP: ${response.status}`);
+                    }).catch(() => {
+                        // Fallback if response body is not JSON or empty
+                        throw new Error(`Lỗi HTTP: ${response.status}`);
+                    });
+                }
+                return response.json(); // Parse JSON body for successful responses
+            })
+            .then(data => {
+                console.log('Success:', data); // Log successful response data
                 // Close order modal and show success modal
                 closeModal();
-                document.getElementById('successModal').style.display = 'flex'; // Use flex for centering
-                document.getElementById('successModal').style.alignItems = 'center';
-                document.getElementById('successModal').style.justifyContent = 'center';
-
-
-            } catch (error) {
-                console.error('Error submitting order:', error.response ? error.response.data : error.message); // Log detailed error
-                alert('Rất tiếc, đã có lỗi xảy ra khi gửi đơn hàng. Vui lòng thử lại sau hoặc liên hệ hotline.');
-                closeModal(); // Close the review modal even on error
-            } finally {
-                 // Restore button state
+                document.getElementById('successModal').style.display = 'flex';
+            })
+            .catch(error => {
+                console.error('Error submitting order:', error); // Log the error
+                // Display error within the modal
+                const orderSummaryDiv = document.getElementById('orderSummary');
+                 // Remove previous error message if exists
+                const existingError = orderSummaryDiv.querySelector('.submit-error-message');
+                if (existingError) existingError.remove();
+                // Add new error message
+                orderSummaryDiv.innerHTML += `<p class="mt-4 text-red-600 font-semibold text-center submit-error-message">Lỗi gửi đơn hàng: ${error.message}. Vui lòng thử lại hoặc liên hệ hotline.</p>`;
+            })
+            .finally(() => {
+                 // Restore button state regardless of success or failure
                 submitButton.innerHTML = originalButtonText;
                 submitButton.disabled = false;
-            }
+                document.querySelector('#orderModal .btn-secondary').disabled = false; // Re-enable edit button
+            });
         }
-        // --- END: Order Review and Submission ---
+        // *** END: Updated submitOrder function using fetch ***
 
         // --- START: Notification Functions ---
         function displayRandomNotification() {
@@ -1030,11 +1149,8 @@
             // Show notification with animation
             notificationElement.style.display = 'flex';
             notificationElement.style.animation = 'none'; // Reset animation
-            void notificationElement.offsetWidth; // Trigger reflow
+            void notificationElement.offsetWidth; // Trigger reflow to restart animation
             notificationElement.style.animation = 'slideIn 0.5s ease-out, fadeOut 0.5s ease-out 4.5s forwards';
-
-            // Hide after animation finishes (5 seconds total)
-            // No need for separate setTimeout if using animation 'forwards'
         }
 
         function startNotificationLoop() {
@@ -1047,9 +1163,10 @@
 
             // Set interval for subsequent displays (random between 10-20 seconds)
             notificationInterval = setInterval(() => {
+                // Schedule next notification to show after a random delay
                 const randomDelay = Math.floor(Math.random() * 10000) + 10000; // 10000ms to 19999ms
                 setTimeout(displayRandomNotification, randomDelay);
-            }, 20000); // Check every 20 seconds to schedule the next one
+             } , 20000); // Check every 20 seconds if we should schedule the next one
         }
         // --- END: Notification Functions ---
 
@@ -1058,11 +1175,14 @@
             const orderModal = document.getElementById('orderModal');
             const successModal = document.getElementById('successModal');
             if (event.target === orderModal) {
-                closeModal();
+                // Only close if submit is not in progress
+                const submitButton = document.getElementById('confirmSubmitBtn');
+                if (!submitButton.disabled) {
+                    closeModal();
+                }
             }
             if (event.target === successModal) {
-                // Don't reset form here, only close
-                 document.getElementById('successModal').style.display = 'none';
+                 closeSuccessModal(); // Use the function to ensure form reset etc.
             }
         }
         // --- END: Modal Close on Outside Click ---
