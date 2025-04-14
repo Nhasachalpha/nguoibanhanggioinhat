@@ -1020,7 +1020,7 @@
             document.getElementById('orderModal').style.display = 'none';
             // Clear potential error message from failed submit
             const orderSummaryDiv = document.getElementById('orderSummary');
-            const existingError = orderSummaryDiv.querySelector('.text-red-600');
+            const existingError = orderSummaryDiv.querySelector('.submit-error-message'); // Use class selector
             if (existingError) {
                 existingError.remove();
             }
@@ -1044,8 +1044,8 @@
             }
         }
 
-        // *** START: Updated submitOrder function using fetch ***
-        function submitOrder() {
+        // *** START: submitOrder function using axios.post ***
+        async function submitOrder() {
             // Get form data again
             const name = fullNameInput.value.trim();
             const phone = phoneInput.value.trim();
@@ -1065,14 +1065,14 @@
             const today = new Date();
             const formattedDate = `${String(today.getDate()).padStart(2, '0')}/${String(today.getMonth() + 1).padStart(2, '0')}/${today.getFullYear()}`;
 
-            // Prepare data object matching the keys from the provided snippet
+            // Prepare data object (FLAT structure, like original axios example)
             const orderData = {
-                'Ngày Đặt': formattedDate, // Key from previous version
-                'Họ Tên': name,           // Key from previous version
-                'Số Điện Thoại': phone,   // Key from previous version
-                'Địa Chỉ': fullAddress,   // Key from previous version
-                'Sản Phẩm': selectedProduct, // Key from previous version
-                'Ghi Chú': note || "Không có" // Key from previous version
+                'Ngày Đặt': formattedDate,
+                'Họ Tên': name,
+                'Số Điện Thoại': phone,
+                'Địa Chỉ': fullAddress,
+                'Sản Phẩm': selectedProduct,
+                'Ghi Chú': note || "Không có"
             };
 
             // Display loading state
@@ -1082,53 +1082,57 @@
             submitButton.disabled = true;
             document.querySelector('#orderModal .btn-secondary').disabled = true; // Disable edit button
 
-            // Send data to SheetDB API using fetch
-            fetch('https://sheetdb.io/api/v1/fg5880qtxha50', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                // SheetDB expects the data wrapped in a 'data' object for single row POST
-                body: JSON.stringify({ data: orderData })
-            })
-            .then(response => {
-                // Check if the request was successful (status code 200-299)
-                if (!response.ok) {
-                    // If not OK, throw an error to be caught by .catch()
-                    // Try to get error message from response body if possible
-                    return response.json().then(errData => {
-                        throw new Error(errData.error || `Lỗi HTTP: ${response.status}`);
-                    }).catch(() => {
-                        // Fallback if response body is not JSON or empty
-                        throw new Error(`Lỗi HTTP: ${response.status}`);
-                    });
-                }
-                return response.json(); // Parse JSON body for successful responses
-            })
-            .then(data => {
-                console.log('Success:', data); // Log successful response data
+            try {
+                // Submit to SheetDB API using axios.post with flat data
+                const response = await axios.post('https://sheetdb.io/api/v1/fg5880qtxha50', orderData, {
+                     headers: {
+                        'Content-Type': 'application/json' // Axios usually sets this, but good to be explicit
+                    }
+                });
+
+                 console.log('SheetDB response:', response.data); // Log successful response data
+
                 // Close order modal and show success modal
                 closeModal();
                 document.getElementById('successModal').style.display = 'flex';
-            })
-            .catch(error => {
-                console.error('Error submitting order:', error); // Log the error
+
+            } catch (error) {
+                 console.error('Error submitting order:', error); // Log the error
+                 // Extract error message
+                 let errorMsg = "Lỗi không xác định.";
+                 if (error.response) {
+                    // The request was made and the server responded with a status code
+                    // that falls out of the range of 2xx
+                    console.error("Error data:", error.response.data);
+                    console.error("Error status:", error.response.status);
+                    errorMsg = error.response.data?.error || error.response.data?.message || `Lỗi HTTP: ${error.response.status}`;
+                 } else if (error.request) {
+                    // The request was made but no response was received
+                    console.error("Error request:", error.request);
+                    errorMsg = "Không nhận được phản hồi từ máy chủ.";
+                 } else {
+                    // Something happened in setting up the request that triggered an Error
+                    console.error('Error message:', error.message);
+                    errorMsg = error.message;
+                 }
+
                 // Display error within the modal
                 const orderSummaryDiv = document.getElementById('orderSummary');
                  // Remove previous error message if exists
                 const existingError = orderSummaryDiv.querySelector('.submit-error-message');
                 if (existingError) existingError.remove();
                 // Add new error message
-                orderSummaryDiv.innerHTML += `<p class="mt-4 text-red-600 font-semibold text-center submit-error-message">Lỗi gửi đơn hàng: ${error.message}. Vui lòng thử lại hoặc liên hệ hotline.</p>`;
-            })
-            .finally(() => {
+                orderSummaryDiv.innerHTML += `<p class="mt-4 text-red-600 font-semibold text-center submit-error-message">Lỗi gửi đơn hàng: ${errorMsg}. Vui lòng kiểm tra lại thông tin hoặc liên hệ hotline.</p>`;
+
+            } finally {
                  // Restore button state regardless of success or failure
                 submitButton.innerHTML = originalButtonText;
                 submitButton.disabled = false;
                 document.querySelector('#orderModal .btn-secondary').disabled = false; // Re-enable edit button
-            });
+            }
         }
-        // *** END: Updated submitOrder function using fetch ***
+        // *** END: submitOrder function using axios.post ***
+
 
         // --- START: Notification Functions ---
         function displayRandomNotification() {
